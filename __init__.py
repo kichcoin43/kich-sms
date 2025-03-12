@@ -1,3 +1,4 @@
+
 """
 Відправник повідомлень Telegram для України
 ==========================================
@@ -5,5 +6,8 @@
 Пакет для масової відправки повідомлень українським користувачам Telegram.
 """
 
-__version__ = '1.0.0'
-__author__ = 'Telegram Sender Team'
+# Экспортируем основной класс для прямого импорта
+try:
+    from .sender import UkrainianTelegramSender
+except ImportError:
+    pass
