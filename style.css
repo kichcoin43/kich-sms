@@ -1,0 +1,46 @@
+/* Custom styles for Telegram Bulk Messenger */
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar-brand i {
+    margin-right: 5px;
+}
+
+/* Ensure footer stays at bottom */
+footer {
+    margin-top: auto;
+}
+
+/* Card shadow */
+.card {
+    border: none;
+    transition: all 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+/* Textarea styling */
+textarea.form-control {
+    resize: vertical;
+    min-height: 200px;
+}
+
+/* Button styling */
+.btn {
+    border-radius: 4px;
+}
+
+/* Progress indicator */
+.progress {
+    height: 25px;
+}
+
+.progress-bar {
+    transition: width 0.6s ease;
+}
