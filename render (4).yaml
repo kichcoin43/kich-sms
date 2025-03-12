@@ -1,0 +1,26 @@
+
+# Конфигурация для Render.com
+services:
+  - type: web
+    name: kich-sms-telegram
+    env: python
+    buildCommand: pip install -r requirements.txt && chmod +x render-deploy.sh && ./render-deploy.sh
+    startCommand: gunicorn --bind=0.0.0.0:$PORT app:app
+    plan: free
+    autoDeploy: false
+    envVars:
+      - key: TELEGRAM_API_ID
+        sync: false
+      - key: TELEGRAM_API_HASH
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        value: sqlite:///instance/telegram_sender.db
+      - key: PORT
+        value: 5000
+    healthCheckPath: /
+    disk:
+      name: sqlite-data
+      mountPath: /app/instance
+      sizeGB: 1
