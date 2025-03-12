@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block header %}KICH SMS{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                О приложении
+            </div>
+            <div class="card-body">
+                <h3 class="card-title">Добро пожаловать в KICH SMS</h3>
+                <p class="card-text">
+                    Данное приложение разработано для массовой отправки сообщений пользователям Telegram.
+                    Система оптимизирована для работы с различными контактами и обеспечивает надежную
+                    отправку сообщений, предотвращая проблемы с истекающими кодами подтверждения.
+                </p>
+                <p>Основные возможности:</p>
+                <ul>
+                    <li>Авторизация в Telegram с сохранением сессии</li>
+                    <li>Управление списком получателей (телефоны и @username)</li>
+                    <li>Отправка сообщений с учетом ограничений Telegram (защита от FloodWait)</li>
+                    <li>Оптимизация для украинских номеров телефонов</li>
+                    <li>Ведение журнала отправки сообщений</li>
+                </ul>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <a href="/auth" class="btn btn-telegram btn-lg w-100">
+                            <i class="fas fa-sign-in-alt me-2"></i> Авторизация в Telegram
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="/send" class="btn btn-success btn-lg w-100">
+                            <i class="fas fa-paper-plane me-2"></i> Отправить сообщения
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                Руководство по использованию
+            </div>
+            <div class="card-body">
+                <h4>Пошаговая инструкция:</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h1><i class="fas fa-user-check text-primary mb-3"></i></h1>
+                                <h5 class="card-title">Шаг 1: Авторизация</h5>
+                                <p class="card-text">Войдите в свой аккаунт Telegram, используя номер телефона и код подтверждения.</p>
+                                <a href="/auth" class="btn btn-outline-primary">Перейти к авторизации</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h1><i class="fas fa-users text-success mb-3"></i></h1>
+                                <h5 class="card-title">Шаг 2: Получатели</h5>
+                                <p class="card-text">Добавьте список получателей, которым нужно отправить сообщения.</p>
+                                <a href="/recipients" class="btn btn-outline-success">Управление получателями</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h1><i class="fas fa-edit text-warning mb-3"></i></h1>
+                                <h5 class="card-title">Шаг 3: Сообщение</h5>
+                                <p class="card-text">Напишите текст сообщения и выберите получателей для отправки.</p>
+                                <a href="/send" class="btn btn-outline-warning">Перейти к отправке</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h1><i class="fas fa-cogs text-secondary mb-3"></i></h1>
+                                <h5 class="card-title">Шаг 4: Настройки</h5>
+                                <p class="card-text">Настройте параметры отправки и Telegram API для оптимальной работы.</p>
+                                <a href="/setup" class="btn btn-outline-secondary">Настроить приложение</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                Быстрые действия
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/recipients" class="btn btn-outline-primary mb-2">
+                        <i class="fas fa-users me-2"></i> Управление получателями
+                    </a>
+                    <a href="/send" class="btn btn-outline-success mb-2">
+                        <i class="fas fa-paper-plane me-2"></i> Отправить сообщения
+                    </a>
+                    <a href="/setup" class="btn btn-outline-secondary mb-2">
+                        <i class="fas fa-cogs me-2"></i> Настройки приложения
+                    </a>
+                    <a href="/help" class="btn btn-outline-info">
+                        <i class="fas fa-question-circle me-2"></i> Помощь и документация
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                Техническая информация
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Системная информация</h5>
+                <p class="card-text small">
+                    Версия: 1.0.0<br>
+                    Библиотека Telegram: Telethon<br>
+                    Интерфейс: Flask Web<br>
+                    Поддержка сессий: Да<br>
+                    Защита от FloodWait: Да<br>
+                </p>
+                <p class="small text-muted">
+                    Эта система использует Telegram API для отправки сообщений.
+                    Обратите внимание, что массовая рассылка должна соответствовать
+                    правилам использования Telegram.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

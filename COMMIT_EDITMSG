@@ -1,0 +1,13 @@
+Assistant checkpoint: Создание файла получателей и скрипта импорта
+
+Assistant generated file changes:
+- easy_import.py: Создание скрипта для импорта получателей
+
+---
+
+User prompt:
+
+там нет кнопки Upload Files
+
+Replit-Commit-Author: Assistant
+Replit-Commit-Session-Id: 487dae37-1ece-4e62-8064-f205283cac7e

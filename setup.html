@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Настройки{% endblock %}
+
+{% block header %}Настройки приложения{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                Настройки Telegram API
+            </div>
+            <div class="card-body">
+                <form method="post" action="/setup">
+                    <div class="mb-3">
+                        <label for="api_id" class="form-label">API ID</label>
+                        <input type="number" class="form-control" id="api_id" name="api_id" 
+                               value="{{ config.api_id }}" required>
+                        <div class="form-text">
+                            Идентификатор API приложения Telegram. По умолчанию используется общий API ID.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="api_hash" class="form-label">API Hash</label>
+                        <input type="text" class="form-control" id="api_hash" name="api_hash" 
+                               value="{{ config.api_hash }}" required>
+                        <div class="form-text">
+                            Хеш API приложения Telegram. По умолчанию используется общий API Hash.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="session_name" class="form-label">Имя сессии</label>
+                        <input type="text" class="form-control" id="session_name" name="session_name" 
+                               value="{{ config.session_name }}" required>
+                        <div class="form-text">
+                            Имя файла сессии для хранения авторизации в Telegram.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="delay" class="form-label">Задержка по умолчанию (сек)</label>
+                        <input type="number" class="form-control" id="delay" name="delay" 
+                               min="1" max="10" step="0.5" value="{{ config.delay }}" required>
+                        <div class="form-text">
+                            Задержка между отправкой сообщений по умолчанию (в секундах).
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Сохранить настройки</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                Информация
+            </div>
+            <div class="card-body">
+                <h5>Получение собственных API ключей</h5>
+                <p>Если вы хотите использовать собственные API ключи Telegram:</p>
+                <ol>
+                    <li>Перейдите на сайт <a href="https://my.telegram.org/apps" target="_blank">my.telegram.org/apps</a></li>
+                    <li>Войдите в свой аккаунт Telegram</li>
+                    <li>Создайте новое приложение</li>
+                    <li>Скопируйте API ID и API Hash</li>
+                    <li>Вставьте их в соответствующие поля формы</li>
+                </ol>
+                
+                <div class="alert alert-warning mt-3">
+                    <strong>Внимание!</strong> Храните ваши API ключи в безопасности.
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                Файлы сессий
+            </div>
+            <div class="card-body">
+                <p>Файлы сессий хранят информацию об авторизации в Telegram. Если у вас возникают проблемы с авторизацией, вы можете изменить имя сессии для создания новой.</p>
+                
+                <div class="alert alert-info mt-3">
+                    <strong>Совет:</strong> Для каждого номера телефона рекомендуется использовать отдельную сессию.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

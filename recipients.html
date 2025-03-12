@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Получатели{% endblock %}
+
+{% block header %}Управление получателями{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Управление получателями</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            Добавить получателя
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('recipients') }}">
+                <div class="mb-3">
+                    <label for="recipient" class="form-label">Идентификатор получателя</label>
+                    <input type="text" class="form-control" id="recipient" name="recipient" placeholder="@username или телефон в формате +380xxxxxxxxx" required>
+                    <div class="form-text">Введите @username для каналов/групп или номер телефона в международном формате.</div>
+                </div>
+                <input type="hidden" name="action" value="add">
+                <button type="submit" class="btn btn-primary">Добавить</button>
+            </form>
+
+            <hr>
+            <form method="POST" action="{{ url_for('recipients') }}" class="mt-3">
+                <input type="hidden" name="action" value="import">
+                <button type="submit" class="btn btn-success">Импортировать из файла recipients.txt</button>
+                <div class="form-text">Нажмите, чтобы импортировать получателей из файла recipients.txt</div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                Список получателей
+            </div>
+            <div class="card-body">
+                <form method="post" action="/recipients">
+                    <div class="mb-3">
+                        <label for="recipients" class="form-label">Список получателей (по одному на строку)</label>
+                        <textarea class="form-control" id="recipients" name="recipients" 
+                                  rows="10" placeholder="@username1&#10;@username2&#10;+380xxxxxxxxx">{% for recipient in recipients %}{{ recipient }}
+{% endfor %}</textarea>
+                        <div class="form-text">
+                            Каждый получатель должен быть на отдельной строке.<br>
+                            Можно использовать @username или телефон в формате +380xxxxxxxxx
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Сохранить список</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                Информация
+            </div>
+            <div class="card-body">
+                <p><strong>Всего получателей:</strong> {{ recipients|length }}</p>
+
+                <h5 class="mt-3">Форматы записей:</h5>
+                <ul>
+                    <li><strong>@username</strong> - никнейм пользователя</li>
+                    <li><strong>+380xxxxxxxxx</strong> - номер телефона (международный формат)</li>
+                </ul>
+
+                <div class="alert alert-warning mt-3">
+                    <strong>Примечание:</strong> Для работы с украинскими номерами используйте код страны +380.
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                Действия
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/send" class="btn btn-success">Перейти к отправке</a>
+                    <a href="/help" class="btn btn-outline-secondary">Помощь</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

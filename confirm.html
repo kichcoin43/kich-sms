@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Подтверждение отправки{% endblock %}
+
+{% block header %}Подтверждение отправки сообщений{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">
+                Проверьте информацию перед отправкой
+            </div>
+            <div class="card-body">
+                <h5>Информация о рассылке:</h5>
+                <div class="mb-3">
+                    <label class="form-label">Текст сообщения:</label>
+                    <div class="card">
+                        <div class="card-body bg-light">
+                            {{ message|replace('\n', '<br>')|safe }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <p><strong>Количество получателей:</strong> {{ recipients_count }}</p>
+                    <p><strong>Задержка между сообщениями:</strong> {{ delay }} сек</p>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>Внимание!</strong> Убедитесь, что вы авторизованы в Telegram перед отправкой.
+                </div>
+                
+                <form method="post" action="/confirm">
+                    <div class="d-flex justify-content-between">
+                        <a href="/send" class="btn btn-secondary">Назад</a>
+                        <button type="submit" class="btn btn-success">Подтвердить и отправить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                Информация
+            </div>
+            <div class="card-body">
+                <p>После нажатия кнопки "Подтвердить и отправить", система запустит процесс отправки сообщений.</p>
+                
+                <p>Процесс отправки может занять некоторое время, в зависимости от количества получателей и установленной задержки.</p>
+                
+                <div class="alert alert-info mt-3">
+                    <strong>Совет:</strong> Следите за выполнением в консоли Replit для получения подробной информации о процессе отправки.
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                Ориентировочное время
+            </div>
+            <div class="card-body">
+                <p>
+                    <strong>Примерное время отправки:</strong><br>
+                    {% set estimated_time = recipients_count * delay %}
+                    {% set minutes = (estimated_time / 60)|int %}
+                    {% set seconds = (estimated_time % 60)|int %}
+                    
+                    {{ minutes }} мин {{ seconds }} сек
+                </p>
+                
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

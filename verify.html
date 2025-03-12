@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подтверждение - Telegram Messaging</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0088cc;
+            --primary-hover: #0077b5;
+            --dark-bg: #212529;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            padding: 1.5rem;
+            color: white;
+            border-bottom: none;
+        }
+        
+        .card-body {
+            padding: 2rem;
+        }
+        
+        .form-control {
+            padding: 0.75rem;
+            border-radius: 10px;
+            border: 1px solid #ced4da;
+            margin-bottom: 1rem;
+        }
+        
+        .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(0,136,204,0.25);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        
+        .btn-outline-secondary {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .telegram-icon {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+        
+        .alert {
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        footer {
+            background-color: var(--dark-bg);
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: auto;
+        }
+        
+        .verification-code {
+            letter-spacing: 2px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        
+        .phone-number-display {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .verification-info {
+            background-color: #e9f7fe;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .verification-info i {
+            color: var(--primary-color);
+        }
+
+        .two-factor-section {
+            border-top: 1px solid #444;
+            margin-top: 2rem;
+            padding-top: 2rem;
+        }
+
+        .two-factor-section .alert {
+            background-color: #2d3748;
+            border-color: #4a5568;
+        }
+    </style>
+</head>
+<body data-bs-theme="dark">
+    <div class="main-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-10 col-lg-8">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h4 class="mb-0">
+                                <i class="fab fa-telegram-plane telegram-icon"></i>
+                                {% if needs_2fa %}
+                                    Двухфакторная аутентификация
+                                {% else %}
+                                    Подтверждение входа
+                                {% endif %}
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">
+                                    {{ message }}
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                            {% endwith %}
+
+                            {% if not needs_2fa %}
+                            <div class="verification-info mb-4">
+                                <p class="mb-2">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Код подтверждения отправлен на номер 
+                                    <span class="phone-number-display">{{ phone_number }}</span>
+                                </p>
+                                <p class="mb-0 text-muted small">
+                                    Проверьте СМС или уведомления в приложении Telegram
+                                </p>
+                                <p class="mt-2 small text-info">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Код действителен в течение ограниченного времени. Если код истёк, 
+                                    нажмите кнопку "Отправить новый код" внизу формы.
+                                </p>
+                            </div>
+                            {% endif %}
+
+                            <form action="{{ url_for('verify') }}" method="post">
+                                {% if needs_2fa %}
+                                    <input type="hidden" name="verification_code" value="{{ verification_code }}">
+                                    <div class="verification-info mb-4">
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-shield-alt me-2"></i>
+                                            Требуется двухфакторная аутентификация
+                                            <p class="small mb-0 mt-2">
+                                                Пожалуйста, введите ваш пароль 2FA для завершения входа
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="two_factor_password" class="form-label">Пароль 2FA</label>
+                                        <input type="password" class="form-control" id="two_factor_password" 
+                                               name="two_factor_password" placeholder="Введите пароль 2FA" required>
+                                    </div>
+                                {% else %}
+                                    <div class="mb-4">
+                                        <label for="verification_code" class="form-label">Код подтверждения</label>
+                                        <input type="text" class="form-control verification-code" id="verification_code" 
+                                               name="verification_code" placeholder="Введите код из Telegram" required>
+                                    </div>
+                                {% endif %}
+
+                                <div class="d-grid gap-2 mb-3">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        {% if needs_2fa %}
+                                            Подтвердить 2FA
+                                        {% else %}
+                                            Подтвердить код
+                                        {% endif %}
+                                    </button>
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+                                    <a href="{{ url_for('index') }}" class="btn btn-link text-secondary">
+                                        <i class="fas fa-arrow-left me-1"></i>
+                                        Вернуться назад
+                                    </a>
+                                    {% if not needs_2fa %}
+                                    <a href="{{ url_for('resend_code') }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-sync me-1"></i>
+                                        Отправить новый код
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4 text-muted">
+                        <p>
+                            <small>
+                                {% if needs_2fa %}
+                                    Если вы забыли пароль 2FA, восстановите его через приложение Telegram
+                                {% else %}
+                                    Если вы не получили код, проверьте правильность введенного номера<br>
+                                    или попробуйте выполнить вход позже
+                                {% endif %}
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center text-muted">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 Telegram Messaging App</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

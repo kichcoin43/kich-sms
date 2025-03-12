@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание рассылки</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .recipient-error {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .error-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        .error-item {
+            display: flex;
+            margin-bottom: 5px;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .error-recipient {
+            font-weight: bold;
+            flex: 0 0 200px;
+        }
+        .error-reason {
+            color: #dc3545;
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Создание сообщения для рассылки</h4>
+                    </div>
+                    <div class="card-body">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                        {% endwith %}
+                        
+                        {% if error_recipients %}
+                        <div class="alert alert-warning">
+                            <h5 class="alert-heading">Найдены некорректные получатели:</h5>
+                            <div class="error-list">
+                                {% for recipient, reason in error_recipients %}
+                                <div class="error-item">
+                                    <div class="error-recipient">{{ recipient }}</div>
+                                    <div class="error-reason">{{ reason }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <p class="mb-0">Пожалуйста, исправьте или удалите эти записи перед отправкой.</p>
+                        </div>
+                        {% endif %}
+                        
+                        <form action="{{ url_for('send') }}" method="post">
+                            <div class="mb-3">
+                                <label for="recipients" class="form-label">Получатели (каждый с новой строки)</label>
+                                <textarea class="form-control" id="recipients" name="recipients" rows="6" required
+                                    placeholder="@username1&#10;@username2&#10;+79001234567"></textarea>
+                                <div class="form-text">
+                                    Укажите имена пользователей (с @) или номера телефонов в международном формате
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Текст сообщения</label>
+                                <textarea class="form-control" id="message" name="message" rows="8" required
+                                    placeholder="Текст вашего сообщения..."></textarea>
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a href="{{ url_for('logout') }}" class="btn btn-outline-secondary me-md-2">Выйти</a>
+                                <button type="submit" class="btn btn-primary">Отправить сообщения</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

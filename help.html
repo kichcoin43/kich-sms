@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Помощь{% endblock %}
+
+{% block header %}Руководство пользователя{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                Инструкция по использованию
+            </div>
+            <div class="card-body">
+                <h4>Общая информация</h4>
+                <p>
+                    Это приложение предназначено для массовой отправки сообщений украинским пользователям Telegram.
+                    Приложение оптимизировано для работы с украинскими номерами телефонов и обеспечивает надежную
+                    отправку даже при проблемах с истекающими кодами подтверждения.
+                </p>
+                
+                <h4>Основные шаги:</h4>
+                <ol>
+                    <li><strong>Авторизация в Telegram</strong> - вход в ваш аккаунт Telegram</li>
+                    <li><strong>Настройка списка получателей</strong> - добавление пользователей для рассылки</li>
+                    <li><strong>Составление сообщения</strong> - написание текста для отправки</li>
+                    <li><strong>Отправка сообщений</strong> - запуск процесса рассылки</li>
+                </ol>
+                
+                <h4>Типичный сценарий использования:</h4>
+                <ol>
+                    <li>Перейдите на страницу <a href="/auth">Авторизация</a> и войдите в Telegram</li>
+                    <li>Перейдите на страницу <a href="/recipients">Получатели</a> и добавьте список получателей</li>
+                    <li>Перейдите на страницу <a href="/send">Отправка</a>, напишите сообщение и отправьте его</li>
+                    <li>Наблюдайте за процессом отправки в консоли Replit</li>
+                </ol>
+                
+                <h4>Решение распространенных проблем:</h4>
+                <div class="accordion" id="helpAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                Код подтверждения истек
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                            <div class="accordion-body">
+                                <p>
+                                    Telegram отправляет коды подтверждения, которые действительны ограниченное время.
+                                    Если вы получаете сообщение "Код подтверждения истек", запросите новый код на странице
+                                    авторизации и быстро введите его.
+                                </p>
+                                <p>
+                                    Приложение автоматически обработает случаи с истечением срока действия кодов и запросит новый код при необходимости.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                Ошибка FloodWait (ограничение на частоту отправки)
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                            <div class="accordion-body">
+                                <p>
+                                    Telegram ограничивает количество сообщений, которые можно отправить за короткий промежуток времени.
+                                    Если вы получаете ошибку FloodWait, приложение автоматически подождет указанное время и
+                                    продолжит отправку.
+                                </p>
+                                <p>
+                                    Для предотвращения ограничений:
+                                </p>
+                                <ul>
+                                    <li>Увеличьте задержку между сообщениями (3-5 секунд)</li>
+                                    <li>Разделите большие списки получателей на несколько меньших групп</li>
+                                    <li>Избегайте отправки сообщений слишком большому количеству пользователей за короткое время</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                Проблемы с авторизацией
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                            <div class="accordion-body">
+                                <p>
+                                    Если у вас возникают проблемы с авторизацией:
+                                </p>
+                                <ol>
+                                    <li>Удалите файл сессии (например, ua_session.session)</li>
+                                    <li>Перезапустите приложение</li>
+                                    <li>Повторите процесс авторизации</li>
+                                </ol>
+                                <p>
+                                    Вы также можете изменить имя сессии на странице <a href="/setup">Настройки</a>,
+                                    чтобы создать новую сессию.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                Консольные команды
+            </div>
+            <div class="card-body">
+                <h5>Базовые команды:</h5>
+                <pre class="bg-light p-2 mb-2">python main.py</pre>
+                <p class="text-muted small">Запуск графического интерфейса (если доступен)</p>
+                
+                <pre class="bg-light p-2 mb-2">python main.py cli</pre>
+                <p class="text-muted small">Запуск консольного режима</p>
+                
+                <pre class="bg-light p-2 mb-2">python main.py send "Сообщение"</pre>
+                <p class="text-muted small">Быстрая отправка указанного сообщения</p>
+                
+                <h5>Расширенные команды:</h5>
+                <pre class="bg-light p-2 mb-2">python main.py cli --phone="+380xxxxxxxxx" --code="12345" --message="Текст"</pre>
+                <p class="text-muted small">Полная командная строка для авторизации и отправки</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                Дополнительная информация
+            </div>
+            <div class="card-body">
+                <p>
+                    Подробную документацию по приложению можно найти в файле
+                    <code>ua_telegram_sender/README.md</code>
+                </p>
+                
+                <div class="alert alert-warning mt-3">
+                    <strong>Ответственное использование:</strong> Используйте это приложение ответственно
+                    и с соблюдением условий использования Telegram. Массовая рассылка спама может привести
+                    к блокировке вашего аккаунта.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

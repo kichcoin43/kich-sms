@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отправка сообщений</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <style>
+        .recipient-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .recipient-item {
+            margin-bottom: 5px;
+        }
+        .count-badge {
+            background-color: #007bff;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    {% include 'layout.html' %}
+    
+    <div class="container mt-4">
+        <h1>Отправка сообщений</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="post" action="{{ url_for('send') }}">
+            <div class="mb-3">
+                <label for="message" class="form-label">Текст сообщения:</label>
+                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Получатели <span class="count-badge">{{ recipients|length }}</span>:</label>
+                
+                {% if recipients %}
+                    <div class="mb-2">
+                        <button type="button" class="btn btn-sm btn-primary" id="selectAll">Выбрать все</button>
+                        <button type="button" class="btn btn-sm btn-secondary" id="unselectAll">Снять выбор</button>
+                    </div>
+                    
+                    <div class="recipient-list">
+                        {% for recipient in recipients %}
+                            <div class="recipient-item">
+                                <div class="form-check">
+                                    <input class="form-check-input recipient-checkbox" type="checkbox" value="{{ recipient }}" id="recipient{{ loop.index }}" name="selected_recipients">
+                                    <label class="form-check-label" for="recipient{{ loop.index }}">
+                                        {{ recipient }}
+                                    </label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        Выбрано получателей: <span id="selectedCount">0</span> из {{ recipients|length }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        Получатели не найдены. <a href="{{ url_for('recipients') }}">Добавьте получателей</a> перед отправкой сообщений.
+                    </div>
+                {% endif %}
+            </div>
+            
+            {% if recipients %}
+                <button type="submit" class="btn btn-primary">Отправить сообщение</button>
+            {% endif %}
+        </form>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectAllBtn = document.getElementById('selectAll');
+            const unselectAllBtn = document.getElementById('unselectAll');
+            const checkboxes = document.querySelectorAll('.recipient-checkbox');
+            const selectedCountElement = document.getElementById('selectedCount');
+            
+            function updateSelectedCount() {
+                const selectedCount = document.querySelectorAll('.recipient-checkbox:checked').length;
+                selectedCountElement.textContent = selectedCount;
+            }
+            
+            // Добавляем обработчики для всех чекбоксов
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateSelectedCount);
+            });
+            
+            // Обработчик кнопки "Выбрать все"
+            selectAllBtn.addEventListener('click', function() {
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = true;
+                });
+                updateSelectedCount();
+            });
+            
+            // Обработчик кнопки "Снять выбор"
+            unselectAllBtn.addEventListener('click', function() {
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                updateSelectedCount();
+            });
+            
+            // Инициализация счетчика
+            updateSelectedCount();
+        });
+    </script>
+</body>
+</html>
