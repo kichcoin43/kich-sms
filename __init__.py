@@ -8,6 +8,9 @@
 
 # Экспортируем основной класс для прямого импорта
 try:
+    from .sender import UkrainianTelegramSender as UkraineTelegramSender
+    # Обратная совместимость
     from .sender import UkrainianTelegramSender
 except ImportError:
-    pass
+    UkraineTelegramSender = None
+    UkrainianTelegramSender = None
