@@ -18,7 +18,7 @@ services:
       - key: DATABASE_URL
         value: sqlite:///instance/telegram_sender.db
       - key: PORT
-        value: 5000
+        value: 10000
     healthCheckPath: /
     disk:
       name: sqlite-data
