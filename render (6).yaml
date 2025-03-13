@@ -4,8 +4,8 @@ services:
   - type: web
     name: kich-sms-telegram
     env: python
-    buildCommand: pip install -r requirements.txt && chmod +x render-deploy.sh && ./render-deploy.sh
-    startCommand: python3 -m gunicorn app:app --bind=0.0.0.0:$PORT
+    buildCommand: pip install -r requirements.txt flask-login && chmod +x render-deploy.sh && ./render-deploy.sh
+    startCommand: gunicorn app:app --bind=0.0.0.0:$PORT
     plan: free
     autoDeploy: false
     envVars:
