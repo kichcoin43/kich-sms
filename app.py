@@ -53,7 +53,14 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Создаем директорию instance если она не существует
-os.makedirs("instance", exist_ok=True)
+instance_dir = "instance"
+os.makedirs(instance_dir, exist_ok=True)
+# Устанавливаем права доступа на директорию
+try:
+    os.chmod(instance_dir, 0o777)
+    logger.info(f"Установлены права доступа для директории {instance_dir}")
+except Exception as e:
+    logger.error(f"Ошибка при установке прав доступа для директории {instance_dir}: {e}")
 
 # Инициализируем расширение SQLAlchemy
 db.init_app(app)
