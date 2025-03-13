@@ -24,3 +24,6 @@ services:
       name: sqlite-data
       mountPath: /opt/render/project/src/instance
       sizeGB: 1
+    envVars:
+      - key: SQLITE_MODE
+        value: "1"
