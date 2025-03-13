@@ -5,7 +5,12 @@ services:
     name: kich-sms-telegram
     env: python
     buildCommand: pip install -r requirements.txt && chmod +x render-deploy.sh && ./render-deploy.sh
-    startCommand: gunicorn --log-level debug wsgi:app --bind=0.0.0.0:$PORT
+    startCommand: >
+      if [ -f wsgi.py ]; then
+        PYTHONPATH=/opt/render/project/src python -m gunicorn --log-level debug wsgi:app --bind=0.0.0.0:$PORT;
+      else
+        PYTHONPATH=/opt/render/project/src python -m gunicorn --log-level debug app:app --bind=0.0.0.0:$PORT;
+      fi
     plan: free
     autoDeploy: false
     envVars:
