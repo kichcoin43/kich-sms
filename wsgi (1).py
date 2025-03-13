@@ -4,14 +4,18 @@
 
 import os
 import sys
+from pathlib import Path
 
-# Добавляем текущую директорию в sys.path для поиска модулей
-current_dir = os.path.dirname(os.path.abspath(__file__))
-if current_dir not in sys.path:
-    sys.path.insert(0, current_dir)
+# Получаем текущий путь
+current_dir = Path(__file__).parent.absolute()
+if str(current_dir) not in sys.path:
+    sys.path.insert(0, str(current_dir))
 
 # Импортируем app из app.py
-from app import app
+from app import app as application
+
+# Чтобы gunicorn мог найти приложение
+app = application
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
+    application.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
