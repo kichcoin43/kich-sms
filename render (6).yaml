@@ -5,7 +5,7 @@ services:
     name: kich-sms-telegram
     env: python
     buildCommand: pip install -r requirements.txt flask-login && mkdir -p instance && chmod -R 777 instance && chmod +x render-deploy.sh && ./render-deploy.sh
-    startCommand: gunicorn app:app --bind=0.0.0.0:$PORT
+    startCommand: gunicorn app_wsgi:application --bind=0.0.0.0:$PORT
     plan: free
     autoDeploy: false
     envVars:
@@ -17,13 +17,10 @@ services:
         generateValue: true
       - key: DATABASE_URL
         value: sqlite:///instance/telegram_sender.db
-      - key: PORT
-        value: 10000
+      - key: SQLITE_MODE
+        value: "1"
     healthCheckPath: /
     disk:
       name: sqlite-data
       mountPath: /opt/render/project/src/instance
       sizeGB: 1
-    envVars:
-      - key: SQLITE_MODE
-        value: "1"
