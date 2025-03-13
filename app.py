@@ -44,23 +44,44 @@ db = SQLAlchemy(model_class=Base)
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET")
 
-# Конфигурируем базу данных
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///instance/telegram_sender.db")
+# Определяем базовую директорию проекта
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+# Создаем директорию instance если она не существует
+instance_dir = os.path.join(BASE_DIR, "instance")
+os.makedirs(instance_dir, exist_ok=True)
+
+# Устанавливаем максимальные права доступа к директории
+try:
+    os.chmod(instance_dir, 0o777)
+    logger.info(f"Установлены права доступа для директории {instance_dir}")
+except Exception as e:
+    logger.error(f"Ошибка при установке прав доступа для директории {instance_dir}: {e}")
+
+# Конфигурируем базу данных с абсолютным путем
+db_path = os.path.join(instance_dir, "telegram_sender.db")
+app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_recycle": 300,
     "pool_pre_ping": True,
 }
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# Создаем директорию instance если она не существует
-instance_dir = "instance"
-os.makedirs(instance_dir, exist_ok=True)
-# Устанавливаем права доступа на директорию
+# Дополнительная проверка и разрешения для директории базы данных
+logger.info(f"Путь к базе данных: {db_path}")
 try:
-    os.chmod(instance_dir, 0o777)
-    logger.info(f"Установлены права доступа для директории {instance_dir}")
+    # Если файл существует, устанавливаем права
+    if os.path.exists(db_path):
+        os.chmod(db_path, 0o666)
+        logger.info(f"Установлены права доступа для файла базы данных")
+    
+    # Проверка прав на запись в директорию
+    test_file = os.path.join(instance_dir, "test_write.txt")
+    with open(test_file, 'w') as f:
+        f.write("test")
+    os.remove(test_file)
+    logger.info("Проверка прав на запись в директорию instance прошла успешно")
 except Exception as e:
-    logger.error(f"Ошибка при установке прав доступа для директории {instance_dir}: {e}")
+    logger.error(f"Ошибка при проверке прав доступа: {e}")
 
 # Инициализируем расширение SQLAlchemy
 db.init_app(app)
@@ -119,10 +140,31 @@ def before_request():
             init_telegram_client(int(api_id), api_hash)
 
 # Создаем таблицы в базе данных
-with app.app_context():
-    from models import MessageLog, BroadcastSession, User, Recipient # Assuming Recipient model is in models.py
-    db.create_all()
-    logger.info("База данных инициализирована")
+try:
+    with app.app_context():
+        from models import MessageLog, BroadcastSession, User, Recipient # Assuming Recipient model is in models.py
+        db.create_all()
+        logger.info("База данных инициализирована успешно")
+        
+        # Проверяем доступ к базе данных
+        test_user = User.query.first()
+        logger.info(f"Тест запроса к базе данных выполнен: {test_user is not None}")
+        
+        # Создаем тестовую запись если база пуста
+        if User.query.count() == 0:
+            try:
+                test_user = User(username="admin", email="admin@example.com")
+                db.session.add(test_user)
+                db.session.commit()
+                logger.info("Тестовый пользователь создан")
+            except Exception as e:
+                logger.error(f"Ошибка создания тестового пользователя: {e}")
+                db.session.rollback()
+except Exception as e:
+    logger.error(f"Ошибка инициализации базы данных: {e}")
+    # В случае критической ошибки, выводим дополнительную отладочную информацию
+    import traceback
+    logger.error(traceback.format_exc())
 
 # В начале файла, после импортов
 login_manager = LoginManager()
