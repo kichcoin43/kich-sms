@@ -11,9 +11,16 @@ mkdir -p templates
 mkdir -p static
 
 # Проверяем наличие шаблонов и копируем их если нужно
+echo "Копирую шаблоны..."
+mkdir -p templates
+ls -la templates/
+cp -rv templates/* /opt/render/project/src/templates/ 2>/dev/null || echo "Внимание: папка templates пустая или другая ошибка"
+cp -rv /opt/render/project/src/templates/* templates/ 2>/dev/null || echo "Внимание: не удалось скопировать шаблоны из исходной директории"
+# Убеждаемся, что index.html существует
 if [ ! -f "templates/index.html" ]; then
-  echo "Копирую шаблоны..."
-  cp -r /opt/render/project/src/templates/* templates/ || echo "Ошибка копирования шаблонов!"
+  echo "КРИТИЧЕСКАЯ ОШИБКА: templates/index.html не найден после копирования!"
+  echo "Содержимое директории templates:"
+  ls -la templates/
 fi
 
 # Проверяем права доступа
