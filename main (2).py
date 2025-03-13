@@ -20,6 +20,9 @@ import logging
 from app import app
 import importlib.util
 
+# Убеждаемся, что app доступно для gunicorn
+application = app
+
 # Импортируем класс отправителя
 try:
     from ua_telegram_sender.sender import UkrainianTelegramSender
