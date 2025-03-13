@@ -4,13 +4,13 @@ services:
   - type: web
     name: kich-sms-telegram
     env: python
-    buildCommand: pip install -r requirements.txt flask-login && mkdir -p instance && chmod -R 777 instance && chmod +x render-deploy.sh && ./render-deploy.sh
+    buildCommand: pip install -r requirements.txt flask-login && mkdir -p instance templates && chmod -R 777 instance && chmod +x render-deploy.sh && ./render-deploy.sh
     startCommand: gunicorn app_wsgi:application --bind=0.0.0.0:$PORT
     plan: free
     autoDeploy: false
     envVars:
       - key: TELEGRAM_API_ID
-        sync: false
+        sync: falseё
       - key: TELEGRAM_API_HASH
         sync: false
       - key: SESSION_SECRET
@@ -19,6 +19,8 @@ services:
         value: sqlite:///instance/telegram_sender.db
       - key: SQLITE_MODE
         value: "1"
+      - key: FLASK_DEBUG
+        value: "0"
     healthCheckPath: /
     disk:
       name: sqlite-data
